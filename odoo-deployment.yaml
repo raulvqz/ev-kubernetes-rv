@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: odoo-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: odoo
+  template:
+    metadata:
+      labels:
+        app: odoo
+    spec:
+      containers:
+        - name: odoo
+          image: odoo:latest
+          env:
+            - name: HOST
+              value: postgres-service
+          ports:
+            - containerPort: 8069
+          volumeMounts:
+            - name: odoo-persistent-storage
+              mountPath: /var/lib/odoo
+      volumes:
+        - name: odoo-persistent-storage
+          persistentVolumeClaim:
+            claimName: odoo-pvc
